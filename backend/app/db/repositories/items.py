@@ -106,6 +106,7 @@ class ItemsRepository(BaseRepository):  # noqa: WPS214
         tag: Optional[str] = None,
         seller: Optional[str] = None,
         favorited: Optional[str] = None,
+        title: Optional[str] = None,
         limit: int = 20,
         offset: int = 0,
         requested_user: Optional[User] = None,
@@ -156,7 +157,17 @@ class ItemsRepository(BaseRepository):  # noqa: WPS214
                 ),
             )
             # fmt: on
-
+        if title:
+            query_params.append(title)
+            query_params_count += 1
+            
+            query = Query.from_(
+                items,
+            ).where(
+                items.id == Parameter(query_params_count),
+            ).select(
+                items.title
+            )
         if seller:
             query_params.append(seller)
             query_params_count += 1
@@ -176,7 +187,6 @@ class ItemsRepository(BaseRepository):  # noqa: WPS214
                 ),
             )
             # fmt: on
-
         if favorited:
             query_params.append(favorited)
             query_params_count += 1
